@@ -17,7 +17,6 @@ echo "Starting Chromium..."
 mkdir -p /tmp/chromium
 
 chromium \
-    --no-sandbox \
     --disable-dev-shm-usage \
     --disable-gpu \
     --start-maximized \
