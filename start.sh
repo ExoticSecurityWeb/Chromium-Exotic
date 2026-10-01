@@ -3,9 +3,9 @@ set -e
 
 PORT="${PORT:-10000}"
 
-echo "Starting virtual display..."
+echo "Starting Xvfb..."
 
-Xvfb :99 -screen 0 1280x800x24 &
+Xvfb :99 -screen 0 1280x800x24 -ac &
 export DISPLAY=:99
 
 sleep 2
@@ -19,28 +19,27 @@ chromium \
     --disable-dev-shm-usage \
     --disable-gpu \
     --start-maximized \
-    --user-data-dir=/tmp/chromium \
     --no-first-run \
     --no-default-browser-check \
-    "https://www.google.com" &
+    --user-data-dir=/tmp/chromium \
+    about:blank &
 
 sleep 5
 
-echo "Starting VNC..."
+echo "Starting x11vnc..."
 
 x11vnc \
     -display :99 \
+    -localhost \
     -forever \
     -shared \
     -nopw \
-    -listen 127.0.0.1 \
     -rfbport 5900 &
 
-sleep 2
+sleep 3
 
 echo "Starting noVNC on port ${PORT}..."
 
-exec websockify \
-    --web=/usr/share/novnc \
-    "0.0.0.0:${PORT}" \
-    "127.0.0.1:5900"
+exec /usr/share/novnc/utils/novnc_proxy \
+    --vnc 127.0.0.1:5900 \
+    --listen 0.0.0.0:${PORT}
