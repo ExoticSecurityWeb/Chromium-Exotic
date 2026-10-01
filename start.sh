@@ -3,6 +3,8 @@ set -e
 
 PORT="${PORT:-10000}"
 
+echo "PORT=${PORT}"
+
 echo "Starting Xvfb..."
 
 Xvfb :99 -screen 0 1280x800x24 -ac &
